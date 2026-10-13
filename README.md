@@ -49,7 +49,24 @@ built around *watching* — an apex predator that never has to touch its prey.
 
 ---
 
-## Install
+## Download (standalone GUI)
+
+Prebuilt, no-Python-needed GUI builds are published on the
+[**Releases**](../../releases) page:
+
+| Platform | File | Install |
+|---|---|---|
+| **Windows x64** | `otorca-gui-*-windows-x86_64.exe` | Double-click. Install [Wireshark](https://www.wireshark.org/) for capture. |
+| **Debian/Ubuntu/Kali** | `ot-orca-gui_*_amd64.deb` | `sudo apt install ./ot-orca-gui_*_amd64.deb` (pulls in tshark) |
+| **Linux x64 (portable)** | `otorca-gui-*-linux-x86_64` | `chmod +x` and run; needs tshark on PATH |
+
+> Capture needs tshark/Wireshark. On Linux, add your user to the `wireshark`
+> group to capture without root. To build the GUI yourself, see
+> [`packaging/`](packaging/).
+
+---
+
+## Install (from source)
 
 **Prerequisite:** Wireshark/tshark.
 

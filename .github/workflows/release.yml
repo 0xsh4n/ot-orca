@@ -1,0 +1,91 @@
+name: Build GUI releases
+
+# Builds the standalone OT-ORCA GUI for Windows (.exe) and Linux (.deb +
+# standalone binary) and attaches them to a GitHub Release.
+#
+# Trigger by pushing a version tag:   git tag v1.0.0 && git push origin v1.0.0
+# or run manually from the Actions tab (workflow_dispatch) to get artifacts
+# without publishing a release.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write        # needed to create the Release
+
+jobs:
+  # ---------------------------------------------------------------- Linux ----
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install Tk + build tooling
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-tk fakeroot dpkg-dev binutils
+      - name: Install Python deps
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt pyinstaller
+      - name: Build binary + .deb
+        run: |
+          chmod +x packaging/build_linux.sh
+          ./packaging/build_linux.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux
+          path: release/*
+
+  # -------------------------------------------------------------- Windows ----
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Build .exe
+        shell: pwsh
+        run: powershell -ExecutionPolicy Bypass -File packaging/build_windows.ps1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: release/*
+
+  # --------------------------------------------------------------- Release ---
+  release:
+    needs: [build-linux, build-windows]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Collect files
+        run: |
+          mkdir -p release
+          find artifacts -type f -exec cp {} release/ \;
+          ls -lh release
+      - name: Publish Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/*
+          generate_release_notes: true
+          body: |
+            ## OT-ORCA GUI — ${{ github.ref_name }}
+
+            Standalone **passive OT/ICS security scanner** GUI. No Python install needed.
+
+            | Platform | File | Notes |
+            |---|---|---|
+            | Windows x64 | `otorca-gui-*-windows-x86_64.exe` | Install **Wireshark** for capture |
+            | Debian/Ubuntu/Kali | `ot-orca-gui_*_amd64.deb` | `sudo apt install ./ot-orca-gui_*_amd64.deb` (pulls in tshark) |
+            | Linux x64 | `otorca-gui-*-linux-x86_64` | Portable binary; needs tshark on PATH |
+
+            > Capture requires tshark/Wireshark. On Linux, add your user to the
+            > `wireshark` group to capture without root.

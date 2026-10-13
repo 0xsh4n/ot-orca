@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=OT-ORCA
+GenericName=Passive OT/ICS Security Scanner
+Comment=Passively analyze OT/ICS networks for security findings
+Exec=otorca-gui
+Icon=otorca-gui
+Terminal=false
+Categories=Network;Security;System;Monitor;
+Keywords=OT;ICS;SCADA;Modbus;DNP3;S7;security;pentest;
+StartupNotify=true
