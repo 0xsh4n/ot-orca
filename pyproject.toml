@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ot-orca"
+version = "1.0.0"
+description = "OT-ORCA — passive OT/ICS network security scanner, analyzer and reporting toolkit."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "OT-ORCA contributors" }]
+keywords = ["OT", "ICS", "SCADA", "security", "passive", "tshark", "modbus",
+            "dnp3", "s7comm", "iec104", "ethernet-ip", "opcua", "pentest"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Information Technology",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Security",
+]
+dependencies = [
+    "numpy>=1.24",
+    "matplotlib>=3.6",
+    "networkx>=3.0",
+    "requests>=2.28",
+]
+
+[project.optional-dependencies]
+sample = ["scapy>=2.5"]
+dev = ["pytest>=7.0", "scapy>=2.5"]
+
+[project.scripts]
+otorca = "otorca.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/yourorg/ot-orca"
+
+[tool.setuptools.packages.find]
+include = ["otorca*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

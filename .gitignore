@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+
+# OT-ORCA outputs
+*.html
+!docs/**/*.html
+otorca-report.*
+otorca-result.*
+*.dot
+/reports/
+~/otorca-reports/
+
+# Captures (can contain sensitive OT data — never commit real plant traffic)
+*.pcap
+*.pcapng
+*.cap
+!sample/otdemo.pcap
+
+# Tooling
+.pytest_cache/
+.mypy_cache/
+.DS_Store
